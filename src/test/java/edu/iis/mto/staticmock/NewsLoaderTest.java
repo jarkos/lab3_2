@@ -24,7 +24,7 @@ import static org.hamcrest.core.Is.is;
 public class NewsLoaderTest {
 
 	@Test
-	public void loadNews_checkNewsListForPublicContent_shouldBeOnlyOnePublicContent() throws IllegalArgumentException, IllegalAccessException 
+	public void loadNews_checkNewsListForSubsrcibedContent_shouldBeTwoContentsOnList() throws IllegalArgumentException, IllegalAccessException 
 	{
 		mockStatic(NewsReaderFactory.class);
 		mockStatic(ConfigurationLoader.class);
@@ -67,11 +67,11 @@ public class NewsLoaderTest {
 		NewsLoader newsLoader = new NewsLoader();
 		PublishableNews publishableNews = newsLoader.loadNews();
 		
-		Field field = getField(PublishableNews.class,"publicContent");
-		List<String> publicContentList = (List<String>)field.get(publishableNews);
-		int result = publicContentList.size();
+		Field field = getField(PublishableNews.class,"subscribentContent");
+		List<String> subscribentContentList = (List<String>)field.get(publishableNews);
+		int result = subscribentContentList.size();
 
-		assertThat(result,is(1));		
+		assertThat(result,is(2));		
 	}
 	
 }

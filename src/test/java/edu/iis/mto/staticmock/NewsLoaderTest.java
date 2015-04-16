@@ -19,6 +19,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.reflect.Whitebox.getField;
 import static org.hamcrest.core.Is.is;
+import static org.mockito.Mockito.times;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ ConfigurationLoader.class, NewsReaderFactory.class })
@@ -27,6 +28,7 @@ public class NewsLoaderTest {
 	IncomingNews incomingNews;
 	Configuration configuration;
 	PublishableNews publishableNews;
+	NewsReaderFactory newsReaderFactory;
 	
 	@Before
 	public void setUp() throws Exception 
@@ -62,7 +64,7 @@ public class NewsLoaderTest {
 		when(configurationLoader.loadConfiguration()).thenReturn(configuration);
 		
 		NewsReader reader = mock(NewsReader.class);
-		NewsReaderFactory newsReaderFactory = mock(NewsReaderFactory.class);
+		newsReaderFactory = mock(NewsReaderFactory.class);
 		when(NewsReaderFactory.getReader(Mockito.anyString())).thenReturn(reader);
 		when(reader.read()).thenReturn(incomingNews);
 		
@@ -90,6 +92,16 @@ public class NewsLoaderTest {
 		int result = subscribentContentList.size();
 
 		assertThat(result,is(2));		
+	}
+	
+	@Test
+	public void loadNews_checkCallOfgetReaderMethod_shouldBeCalledOnce() throws IllegalArgumentException, IllegalAccessException 
+	{			
+		Field field = getField(PublishableNews.class,"subscribentContent");
+		List<String> subscribentContentList = (List<String>)field.get(publishableNews);
+		int result = subscribentContentList.size();
+
+		Mockito.verify( newsReaderFactory, times(1)).getReader(Mockito.anyString());		
 	}
 	
 }
